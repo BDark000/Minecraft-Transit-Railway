@@ -6,8 +6,8 @@ import mtr.block.BlockPSDAPGDoorBase;
 import mtr.block.BlockPSDAPGGlassEndBase;
 import mtr.block.BlockPSDTop;
 import mtr.block.IBlock;
-import mtr.gui.ClientData;
-import mtr.gui.IDrawing;
+import mtr.client.ClientData;
+import mtr.client.IDrawing;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
@@ -27,7 +27,7 @@ public class RenderPSDTop extends RenderRouteBase<BlockPSDTop.TileEntityPSDTop> 
 	private static final float COLOR_STRIP_END = 0.9375F;
 
 	public RenderPSDTop(BlockEntityRenderDispatcher dispatcher) {
-		super(dispatcher, 2 - SMALL_OFFSET_16, 0.125F, 1.5F, 7.5F);
+		super(dispatcher, 2 - SMALL_OFFSET_16, 0.125F, 1.5F, 7.5F, true);
 	}
 
 	@Override

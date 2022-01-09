@@ -7,14 +7,14 @@ import com.mojang.math.Vector3f;
 import mtr.block.BlockRailwaySign;
 import mtr.block.BlockStationNameBase;
 import mtr.block.IBlock;
-import mtr.config.CustomResources;
+import mtr.client.ClientCache;
+import mtr.client.ClientData;
+import mtr.client.CustomResources;
+import mtr.client.IDrawing;
 import mtr.data.IGui;
 import mtr.data.Platform;
 import mtr.data.RailwayData;
 import mtr.data.Station;
-import mtr.gui.ClientCache;
-import mtr.gui.ClientData;
-import mtr.gui.IDrawing;
 import mtr.mappings.BlockEntityRendererMapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -212,7 +212,7 @@ public class RenderRailwaySign<T extends BlockRailwaySign.TileEntityRailwaySign>
 					final float bottomOffset = (i + 1) * height + extraMargin;
 					final float left = (flipCustomText ? x - maxWidthLeft * size : x) + margin;
 					final float right = (flipCustomText ? x + size : x + (maxWidthRight + 1) * size) - margin;
-					final VertexConsumer vertexConsumer = vertexConsumers.getBuffer(MoreRenderLayers.getLight(ClientData.DATA_CACHE.getDirectionArrow(selectedIdsSorted.get(i), true, false, false, flipCustomText ? HorizontalAlignment.RIGHT : HorizontalAlignment.LEFT, false, margin / size, (right - left) / (bottomOffset - topOffset)), false));
+					final VertexConsumer vertexConsumer = vertexConsumers.getBuffer(MoreRenderLayers.getLight(ClientData.DATA_CACHE.getDirectionArrow(selectedIdsSorted.get(i), true, false, false, flipCustomText ? HorizontalAlignment.RIGHT : HorizontalAlignment.LEFT, false, margin / size, (right - left) / (bottomOffset - topOffset), false), false));
 					IDrawing.drawTexture(matrices, vertexConsumer, left, topOffset, 0, right, bottomOffset, 0, 0, 0, 1, 1, facing, -1, MAX_LIGHT_GLOWING);
 				}
 			}
