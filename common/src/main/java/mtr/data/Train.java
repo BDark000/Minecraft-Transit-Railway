@@ -39,7 +39,7 @@ public abstract class Train extends NameColorDataBase implements IPacket, IGui {
 
 	public static final float ACCELERATION = 0.0045F;
 	protected static final int MAX_CHECK_DISTANCE = 32;
-	protected static final int DOOR_MOVE_TIME = 64;
+	protected static final int DOOR_MOVE_TIME = 80;
 	private static final int DOOR_DELAY = 30;
 
 	private static final String KEY_SPEED = "speed";
@@ -81,7 +81,7 @@ public abstract class Train extends NameColorDataBase implements IPacket, IGui {
 
 		trainId = compoundTag.getString(KEY_TRAIN_CUSTOM_ID);
 		baseTrainType = TrainType.getOrDefault(compoundTag.getString(KEY_TRAIN_TYPE));
-		trainCars = Math.min(baseTrainType.transportMode.maxLength, (int) Math.floor(railLength / baseTrainType.getSpacing()));
+		trainCars = baseTrainType.transportMode == TransportMode.BOAT ? 1 : (int) Math.floor(railLength / baseTrainType.getSpacing());
 
 		isOnRoute = compoundTag.getBoolean(KEY_IS_ON_ROUTE);
 		final CompoundTag tagRidingEntities = compoundTag.getCompound(KEY_RIDING_ENTITIES);
@@ -112,7 +112,7 @@ public abstract class Train extends NameColorDataBase implements IPacket, IGui {
 		reversed = packet.readBoolean();
 		trainId = packet.readUtf(PACKET_STRING_READ_LENGTH);
 		baseTrainType = TrainType.values()[packet.readInt()];
-		trainCars = Math.min(baseTrainType.transportMode.maxLength, (int) Math.floor(railLength / baseTrainType.getSpacing()));
+		trainCars = baseTrainType.transportMode == TransportMode.BOAT ? 1 : (int) Math.floor(railLength / baseTrainType.getSpacing());
 		isOnRoute = packet.readBoolean();
 
 		final int ridingEntitiesCount = packet.readInt();
