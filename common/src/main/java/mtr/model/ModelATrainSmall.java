@@ -8,12 +8,12 @@ public class ModelATrainSmall extends ModelATrain {
 
 	@Override
 	protected int[] getWindowPositions() {
-		return new int[]{-80, 0, 80};
+		return isAel? new int[]{-78, -52, -26, 0, 26, 52, 78} : new int[]{-80, 0, 80};
 	}
 
 	@Override
 	protected int[] getDoorPositions() {
-		return new int[]{-120, -40, 40, 120};
+		return isAel? new int[]{-120, 120} : new int[]{-120, -40, 40, 120};
 	}
 
 	@Override
