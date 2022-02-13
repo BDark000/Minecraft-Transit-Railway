@@ -1,6 +1,7 @@
 package mtr.client;
 
 import mtr.MTR;
+import mtr.MTRClient;
 import mtr.data.Train;
 import mtr.data.TrainType;
 import mtr.data.TransportMode;
@@ -44,9 +45,11 @@ public class TrainClientRegistry {
 
 		register("sp1900", TrainType.SP1900, new ModelSP1900(false), "mtr:textures/entity/sp1900", "sp1900", "sp1900", null, 0x003399, true, 120, 0.5F, false);
 		register("sp1900_small", TrainType.SP1900_SMALL, new ModelSP1900Small(false), "mtr:textures/entity/sp1900", "sp1900", "sp1900", null, 0x003399, true, 120, 0.5F, false);
+		register("sp1900_tiny", TrainType.SP1900_TINY, new ModelSP1900Tiny(false), "mtr:textures/entity/sp1900", "sp1900", "sp1900", null, 0x003399, true, 120, 0.5F, false);
 		register("sp1900_mini", TrainType.SP1900_MINI, new ModelSP1900Mini(false), "mtr:textures/entity/sp1900", "sp1900", "sp1900", null, 0x003399, true, 120, 0.5F, false);
 		register("c1141a", TrainType.C1141A, new ModelSP1900(true), "mtr:textures/entity/c1141a", "c1141a", "c1141a", null, 0xB42249, true, 96, 0.5F, false);
 		register("c1141a_small", TrainType.C1141A_SMALL, new ModelSP1900Small(true), "mtr:textures/entity/c1141a", "c1141a", "c1141a", null, 0xB42249, true, 96, 0.5F, false);
+		register("c1141a_tiny", TrainType.C1141A_TINY, new ModelSP1900Tiny(true), "mtr:textures/entity/c1141a", "c1141a", "c1141a", null, 0xB42249, true, 96, 0.5F, false);
 		register("c1141a_mini", TrainType.C1141A_MINI, new ModelSP1900Mini(true), "mtr:textures/entity/c1141a", "c1141a", "c1141a", null, 0xB42249, true, 96, 0.5F, false);
 		register("m_train", TrainType.M_TRAIN, new ModelMTrain(), "mtr:textures/entity/m_train", "m_train", "m_train", null, 0x999999, true, 90, 0.5F, false);
 		register("m_train_small", TrainType.M_TRAIN_SMALL, new ModelMTrainSmall(), "mtr:textures/entity/m_train", "m_train", "m_train", null, 0x999999, true, 90, 0.5F, false);
@@ -55,17 +58,18 @@ public class TrainClientRegistry {
 		register("mlr_small", TrainType.MLR_SMALL, new ModelMLRSmall(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
 		register("mlr_mini", TrainType.MLR_MINI, new ModelMLRMini(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
 		register("e44", TrainType.E44, new ModelE44(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
+		register("e44_small", TrainType.E44_SMALL, new ModelE44Small(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
 		register("e44_mini", TrainType.E44_MINI, new ModelE44Mini(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
 		register("drl", TrainType.DRL, new ModelDRL(), "mtr:textures/entity/drl", "m_train", null, null, 0xF287B7, true, 90, 0.5F, false);
-		register("k_train", TrainType.K_TRAIN, new ModelKTrain(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_small", TrainType.K_TRAIN_SMALL, new ModelKTrainSmall(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_mini", TrainType.K_TRAIN_MINI, new ModelKTrainMini(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_tcl", TrainType.K_TRAIN_TCL, new ModelKTrain(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_tcl_small", TrainType.K_TRAIN_TCL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_tcl_mini", TrainType.K_TRAIN_TCL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_ael", TrainType.K_TRAIN_AEL, new ModelKTrain(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_ael_small", TrainType.K_TRAIN_AEL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
-		register("k_train_ael_mini", TrainType.K_TRAIN_AEL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train", TrainType.K_TRAIN, new ModelKTrain(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_small", TrainType.K_TRAIN_SMALL, new ModelKTrainSmall(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_mini", TrainType.K_TRAIN_MINI, new ModelKTrainMini(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_tcl", TrainType.K_TRAIN_TCL, new ModelKTrain(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_tcl_small", TrainType.K_TRAIN_TCL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_tcl_mini", TrainType.K_TRAIN_TCL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_ael", TrainType.K_TRAIN_AEL, new ModelKTrain(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_ael_small", TrainType.K_TRAIN_AEL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train_ael_mini", TrainType.K_TRAIN_AEL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
 		register("c_train", TrainType.C_TRAIN, new ModelCTrain(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
 		register("c_train_small", TrainType.C_TRAIN_SMALL, new ModelCTrainSmall(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
 		register("c_train_mini", TrainType.C_TRAIN_MINI, new ModelCTrainMini(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
@@ -73,6 +77,7 @@ public class TrainClientRegistry {
 		register("a_train_tcl_small", TrainType.A_TRAIN_TCL_SMALL, new ModelATrainSmall(false), "mtr:textures/entity/a_train_tcl", "a_train", "a_train", null, 0xF69447, true, 78, 0.5F, false);
 		register("a_train_tcl_mini", TrainType.A_TRAIN_TCL_MINI, new ModelATrainMini(false), "mtr:textures/entity/a_train_tcl", "a_train", "a_train", null, 0xF69447, true, 78, 0.5F, false);
 		register("a_train_ael", TrainType.A_TRAIN_AEL, new ModelATrain(true), "mtr:textures/entity/a_train_ael", "a_train", "a_train", null, 0x008D8D, true, 78, 0.5F, false);
+		register("a_train_ael_small", TrainType.A_TRAIN_AEL_SMALL, new ModelATrainSmall(true), "mtr:textures/entity/a_train_ael", "a_train", "a_train", null, 0x008D8D, true, 78, 0.5F, false);
 		register("a_train_ael_mini", TrainType.A_TRAIN_AEL_MINI, new ModelATrainMini(true), "mtr:textures/entity/a_train_ael", "a_train", "a_train", null, 0x008D8D, true, 78, 0.5F, false);
 		register("light_rail_1", TrainType.LIGHT_RAIL_1, new ModelLightRail(1), "mtr:textures/entity/light_rail_1", "light_rail_aeg", "light_rail_1", null, 0xD2A825, false, 48, 1, false);
 		register("light_rail_1r", TrainType.LIGHT_RAIL_1R, new ModelLightRail(4), "mtr:textures/entity/light_rail_1r", "light_rail_aeg", "light_rail_1", null, 0xD2A825, false, 48, 1, false);
@@ -160,8 +165,8 @@ public class TrainClientRegistry {
 		}
 
 		public void playSpeedSoundEffect(Level world, BlockPos pos, float oldSpeed, float speed) {
-			if (world instanceof ClientLevel && RenderTrains.canPlaySound() && speedSoundCount > 0 && speedSoundBaseId != null) {
-				final int floorSpeed = (int) Math.floor(speed / Train.ACCELERATION / RenderTrains.TICKS_PER_SPEED_SOUND);
+			if (world instanceof ClientLevel && MTRClient.canPlaySound() && speedSoundCount > 0 && speedSoundBaseId != null) {
+				final int floorSpeed = (int) Math.floor(speed / Train.ACCELERATION / MTRClient.TICKS_PER_SPEED_SOUND);
 				if (floorSpeed > 0) {
 					final int index = Math.min(floorSpeed, speedSoundCount) - 1;
 					final boolean isAccelerating = speed == oldSpeed ? useAccelerationSoundsWhenCoasting || new Random().nextBoolean() : speed > oldSpeed;
