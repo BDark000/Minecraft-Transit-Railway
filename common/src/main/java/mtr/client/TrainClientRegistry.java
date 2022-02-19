@@ -28,7 +28,7 @@ public class TrainClientRegistry {
 	private static final String SOUND_DOOR_OPEN = "_door_open";
 	private static final String SOUND_DOOR_CLOSE = "_door_close";
 
-	public static void register(String key, TrainType baseTrainType, ModelTrainBase model, String textureId, String speedSoundBaseId, String doorSoundBaseId, String name, int color, boolean hasGangwayConnection, int speedSoundCount, float doorCloseSoundTime, boolean useAccelerationSoundsWhenCoasting) {
+	public static void register(String key, TrainType baseTrainType, ModelTrainBase model, String textureId, String speedSoundBaseId, String doorSoundBaseId, String name, int color, int speedSoundCount, float doorCloseSoundTime, boolean useAccelerationSoundsWhenCoasting) {
 		final String keyLower = key.toLowerCase();
 		if (!KEY_ORDERS.containsKey(baseTrainType.transportMode)) {
 			KEY_ORDERS.put(baseTrainType.transportMode, new ArrayList<>());
@@ -36,7 +36,7 @@ public class TrainClientRegistry {
 		if (!KEY_ORDERS.get(baseTrainType.transportMode).contains(keyLower)) {
 			KEY_ORDERS.get(baseTrainType.transportMode).add(keyLower);
 		}
-		REGISTRY.put(keyLower, new TrainProperties(baseTrainType, model, textureId, speedSoundBaseId, doorSoundBaseId, new TranslatableComponent(name == null ? "train.mtr." + keyLower : name), color, hasGangwayConnection, speedSoundCount, doorCloseSoundTime, useAccelerationSoundsWhenCoasting));
+		REGISTRY.put(keyLower, new TrainProperties(baseTrainType, model, textureId, speedSoundBaseId, doorSoundBaseId, new TranslatableComponent(name == null ? "train.mtr." + keyLower : name), color, speedSoundCount, doorCloseSoundTime, useAccelerationSoundsWhenCoasting));
 	}
 
 	public static void reset() {
@@ -56,20 +56,21 @@ public class TrainClientRegistry {
 		register("m_train_mini", TrainType.M_TRAIN_MINI, new ModelMTrainMini(), "mtr:textures/entity/m_train", "m_train", "m_train", null, 0x999999, true, 90, 0.5F, false);
 		register("mlr", TrainType.MLR, new ModelMLR(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
 		register("mlr_small", TrainType.MLR_SMALL, new ModelMLRSmall(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
+		register("mlr_tiny", TrainType.MLR_TINY, new ModelMLRTiny(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
 		register("mlr_mini", TrainType.MLR_MINI, new ModelMLRMini(), "mtr:textures/entity/mlr", "mlr", "mlr", null, 0x6CB5E2, true, 93, 0.5F, true);
 		register("e44", TrainType.E44, new ModelE44(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
 		register("e44_small", TrainType.E44_SMALL, new ModelE44Small(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
 		register("e44_mini", TrainType.E44_MINI, new ModelE44Mini(), "mtr:textures/entity/e44", "mlr", "m_train", null, 0xE7AF25, true, 93, 0.5F, true);
 		register("drl", TrainType.DRL, new ModelDRL(), "mtr:textures/entity/drl", "m_train", null, null, 0xF287B7, true, 90, 0.5F, false);
-		register("k_train", TrainType.K_TRAIN, new ModelKTrain(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_small", TrainType.K_TRAIN_SMALL, new ModelKTrainSmall(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_mini", TrainType.K_TRAIN_MINI, new ModelKTrainMini(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_tcl", TrainType.K_TRAIN_TCL, new ModelKTrain(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_tcl_small", TrainType.K_TRAIN_TCL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_tcl_mini", TrainType.K_TRAIN_TCL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_ael", TrainType.K_TRAIN_AEL, new ModelKTrain(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_ael_small", TrainType.K_TRAIN_AEL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
-		register("k_train_ael_mini", TrainType.K_TRAIN_AEL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 0.5F, false);
+		register("k_train", TrainType.K_TRAIN, new ModelKTrain(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_small", TrainType.K_TRAIN_SMALL, new ModelKTrainSmall(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_mini", TrainType.K_TRAIN_MINI, new ModelKTrainMini(false), "mtr:textures/entity/k_train", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_tcl", TrainType.K_TRAIN_TCL, new ModelKTrain(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_tcl_small", TrainType.K_TRAIN_TCL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_tcl_mini", TrainType.K_TRAIN_TCL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_tcl", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_ael", TrainType.K_TRAIN_AEL, new ModelKTrain(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_ael_small", TrainType.K_TRAIN_AEL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
+		register("k_train_ael_mini", TrainType.K_TRAIN_AEL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train", null, 0x0EAB52, true, 66, 1, false);
 		register("c_train", TrainType.C_TRAIN, new ModelCTrain(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
 		register("c_train_small", TrainType.C_TRAIN_SMALL, new ModelCTrainSmall(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
 		register("c_train_mini", TrainType.C_TRAIN_MINI, new ModelCTrainMini(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, true, 69, 0.5F, false);
@@ -130,7 +131,7 @@ public class TrainClientRegistry {
 	}
 
 	private static TrainProperties getBlankProperties(TrainType baseTrainType) {
-		return new TrainProperties(baseTrainType, null, null, null, null, new TranslatableComponent(""), 0, false, 0, 0.5F, false);
+		return new TrainProperties(baseTrainType, null, null, null, null, new TranslatableComponent(""), 0, 0, 0.5F, false);
 	}
 
 	public static class TrainProperties {
@@ -142,15 +143,14 @@ public class TrainClientRegistry {
 		public final String doorSoundBaseId;
 		public final TranslatableComponent name;
 		public final int color;
-		public final boolean hasGangwayConnection;
 		public final int speedSoundCount;
-		private final float doorCloseSoundTime;
+		public final float doorCloseSoundTime;
 		private final boolean useAccelerationSoundsWhenCoasting;
 
 		private final char[] SOUND_GROUP_LETTERS = {'a', 'b', 'c'};
 		private final int SOUND_GROUP_SIZE = SOUND_GROUP_LETTERS.length;
 
-		private TrainProperties(TrainType baseTrainType, ModelTrainBase model, String textureId, String speedSoundBaseId, String doorSoundBaseId, TranslatableComponent name, int color, boolean hasGangwayConnection, int speedSoundCount, float doorCloseSoundTime, boolean useAccelerationSoundsWhenCoasting) {
+		private TrainProperties(TrainType baseTrainType, ModelTrainBase model, String textureId, String speedSoundBaseId, String doorSoundBaseId, TranslatableComponent name, int color, int speedSoundCount, float doorCloseSoundTime, boolean useAccelerationSoundsWhenCoasting) {
 			this.baseTrainType = baseTrainType;
 			this.model = model;
 			this.textureId = resolvePath(textureId);
@@ -158,7 +158,6 @@ public class TrainClientRegistry {
 			this.doorSoundBaseId = resolvePath(doorSoundBaseId);
 			this.name = name;
 			this.color = color;
-			this.hasGangwayConnection = hasGangwayConnection;
 			this.speedSoundCount = speedSoundCount;
 			this.doorCloseSoundTime = doorCloseSoundTime;
 			this.useAccelerationSoundsWhenCoasting = useAccelerationSoundsWhenCoasting;
