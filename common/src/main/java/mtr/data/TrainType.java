@@ -98,7 +98,6 @@ public enum TrainType {
 	BASE_28_2(TransportMode.TRAIN, 28, 2, true),
 	BASE_29_2(TransportMode.TRAIN, 29, 2, true),
 	BASE_30_2(TransportMode.TRAIN, 30, 2, true);
-}
 
 	public final TransportMode transportMode;
 	public final int width;
