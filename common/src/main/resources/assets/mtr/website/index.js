@@ -1,4 +1,5 @@
 import CANVAS from "./utilities.js";
+import DIRECTIONS from "./directions.js";
 import drawMap from "./drawing.js";
 import panable from "./gestures/src/gestures/pan.js";
 import pinchable from "./gestures/src/gestures/pinch.js";
@@ -23,6 +24,8 @@ const SETTINGS = {
 	selectedRouteTypes: [],
 	selectedColor: -1,
 	selectedStation: 0,
+	selectedDirectionsStations: [],
+	selectedDirectionsSegments: {},
 	showText: true,
 	smoothScrollScale: 100,
 	isCJK: text => text.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/),
@@ -44,17 +47,84 @@ const SETTINGS = {
 	},
 	clearPanes: function () {
 		this.selectedStation = 0;
+		this.selectedColor = -1;
+		this.selectedDirectionsStations = [];
+		this.selectedDirectionsSegments = {};
 		showSettings = false;
 		document.getElementById("station_info").style.display = "none";
 		document.getElementById("route_info").style.display = "none";
+		document.getElementById("directions").style.display = "none";
 		document.getElementById("settings").style.display = "none";
-	}
+	},
+	drawDirectionsRoute: function (pathStations, pathRoutes) {
+		if (pathStations.length > 0 || pathRoutes.length > 0) {
+			this.selectedColor = -1;
+		}
+		this.selectedDirectionsStations = pathStations;
+		this.selectedDirectionsSegments = [];
+		for (let i = 0; i < pathRoutes.length; i++) {
+			if (pathRoutes[i] != null) {
+				const color = pathRoutes[i]["color"];
+				if (!(color in this.selectedDirectionsSegments)) {
+					this.selectedDirectionsSegments[color] = [];
+				}
+				this.selectedDirectionsSegments[color].push(pathStations[i] + "_" + pathStations[i + 1]);
+			}
+		}
+		drawMap(container, json[this.dimension]);
+	},
 };
+const WALKING_SPEED_METER_PER_SECOND = 4;
 
 const fetchMainData = () => {
 	clearTimeout(refreshDataId);
 	fetch(SETTINGS.dataUrl, {cache: "no-cache"}).then(response => response.json()).then(result => {
 		json = result;
+
+		for (const dimension of json) {
+			dimension["connections"] = {};
+			const {routes, positions, connections, stations} = dimension;
+
+			for (const stationId in stations) {
+				stations[stationId]["horizontal"] = [];
+				stations[stationId]["vertical"] = [];
+
+				for (const stationId2 in stations) {
+					if (stationId !== stationId2) {
+						if (!(stationId in connections)) {
+							connections[stationId] = [];
+						}
+						connections[stationId].push({route: null, station: stationId2, duration: DIRECTIONS.calculateDistance(stations, stationId, stationId2) * 20 / WALKING_SPEED_METER_PER_SECOND});
+					}
+				}
+			}
+
+			for (const routeIndex in routes) {
+				const route = routes[routeIndex];
+				for (let i = 1; i < route["stations"].length; i++) {
+					if (i > 0) {
+						const prevStationId = route["stations"][i - 1].split("_")[0];
+						if (!(prevStationId in connections)) {
+							connections[prevStationId] = [];
+						}
+						connections[prevStationId].push({route: route, station: route["stations"][i].split("_")[0], duration: route["durations"][i - 1]});
+					}
+				}
+			}
+
+			for (const positionKey in positions) {
+				const {x, y, vertical} = positions[positionKey];
+				const types = [];
+				routes.filter(route => route["stations"].includes(positionKey)).forEach(route => types.push(route["type"]));
+				stations[positionKey.split("_")[0]][vertical ? "vertical" : "horizontal"].push({
+					x: x,
+					y: y,
+					color: parseInt(positionKey.split("_")[1]),
+					types: types,
+				});
+			}
+		}
+
 		setupRouteTypeAndDimensionButtons();
 		drawMap(container, json[SETTINGS.dimension]);
 		refreshDataId = setTimeout(fetchMainData, SETTINGS.refreshDataInterval);
@@ -81,7 +151,7 @@ const setupRouteTypeAndDimensionButtons = () => {
 
 	for (const routeType of Object.keys(SETTINGS.routeTypes)) {
 		const element = document.getElementById("settings_route_type_" + routeType);
-		element.className = "material-icons clickable_icon " + (SETTINGS.selectedRouteTypes.includes(routeType) ? "selected" : "");
+		element.className = "material-icons clickable " + (SETTINGS.selectedRouteTypes.includes(routeType) ? "selected" : "");
 		element.style.display = json[SETTINGS.dimension]["types"].includes(routeType) ? "" : "none";
 		element.onclick = () => {
 			if (SETTINGS.selectedRouteTypes.includes(routeType)) {
@@ -101,7 +171,7 @@ const setupRouteTypeAndDimensionButtons = () => {
 		if (json[dimensionIndex]["routes"].length > 0) {
 			const element = document.createElement("span");
 			element.id = "toggle_dimension_icon_" + dimensionIndex;
-			element.className = "material-icons clickable_icon " + (SETTINGS.dimension === parseInt(dimensionIndex) ? "selected" : "");
+			element.className = "material-icons clickable " + (SETTINGS.dimension === parseInt(dimensionIndex) ? "selected" : "");
 			element.innerText = "public"
 			element.onclick = () => {
 				SETTINGS.dimension = parseInt(dimensionIndex);
@@ -137,6 +207,19 @@ if (getCookie("theme").includes("dark")) {
 document.getElementById("clear_search_icon").onclick = () => SETTINGS.onClearSearch(json[SETTINGS.dimension], true);
 document.getElementById("zoom_in_icon").onclick = () => CANVAS.onZoom(-1, window.innerWidth / 2, window.innerHeight / 2, container, json[SETTINGS.dimension], false);
 document.getElementById("zoom_out_icon").onclick = () => CANVAS.onZoom(1, window.innerWidth / 2, window.innerHeight / 2, container, json[SETTINGS.dimension], false);
+document.getElementById("clear_directions_1_icon").onclick = () => {
+	document.getElementById("directions_result").style.display = "none";
+	const searchBox = document.getElementById("directions_box_1");
+	searchBox.value = "";
+	searchBox.focus();
+};
+document.getElementById("clear_directions_2_icon").onclick = () => {
+	document.getElementById("directions_result").style.display = "none";
+	const searchBox = document.getElementById("directions_box_2");
+	searchBox.value = "";
+	searchBox.focus();
+};
+document.getElementById("clear_search_icon").innerText = "";
 document.getElementById("toggle_text_icon").onclick = event => {
 	const buttonElement = event.target;
 	if (buttonElement.innerText.includes("off")) {
@@ -190,7 +273,6 @@ tappable(background);
 background.on("panmove", event => CANVAS.onCanvasMouseMove(event, container));
 background.on("pinchmove", event => CANVAS.onPinch(event.data.global, event.center.x, event.center.y, container, json[SETTINGS.dimension], true));
 background.on("simpletap", () => {
-	SETTINGS.selectedColor = -1;
 	SETTINGS.clearPanes();
 	drawMap(container, json[SETTINGS.dimension]);
 });

@@ -37,6 +37,10 @@ public class DataServletHandler extends HttpServlet {
 					final DataCache dataCache = railwayData.dataCache;
 
 					railwayData.routes.forEach(route -> {
+						if (route.isHidden) {
+							return;
+						}
+
 						final JsonObject routeObject = new JsonObject();
 						routeObject.addProperty("color", route.color);
 						routeObject.addProperty("name", route.name);
@@ -90,6 +94,10 @@ public class DataServletHandler extends HttpServlet {
 										final JsonObject stationObject = new JsonObject();
 										stationObject.addProperty("name", station.name);
 										stationObject.addProperty("color", station.color);
+										stationObject.addProperty("zone", station.zone);
+										final BlockPos stationCenter = station.getCenter();
+										stationObject.addProperty("x", stationCenter == null ? 0 : stationCenter.getX());
+										stationObject.addProperty("z", stationCenter == null ? 0 : stationCenter.getZ());
 										stationsObject.add(String.valueOf(station.id), stationObject);
 
 										addedStation = true;
