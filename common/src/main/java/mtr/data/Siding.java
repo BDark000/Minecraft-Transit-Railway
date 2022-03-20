@@ -66,7 +66,7 @@ public class Siding extends SavedRailBase implements IPacket, IReducedSaveData {
 		setTrainDetails(messagePackHelper.getString(KEY_TRAIN_ID), TrainType.getOrDefault(messagePackHelper.getString(KEY_BASE_TRAIN_TYPE)));
 		unlimitedTrains = messagePackHelper.getBoolean(KEY_UNLIMITED_TRAINS);
 		maxTrains = messagePackHelper.getInt(KEY_MAX_TRAINS);
-		final float tempAccelerationConstant = RailwayData.round(messagePackHelper.getFloat(KEY_ACCELERATION_CONSTANT, Train.ACCELERATION_DEFAULT), 3);
+		final float tempAccelerationConstant = RailwayData.round(messagePackHelper.getFloat(KEY_ACCELERATION_CONSTANT, Train.ACCELERATION_DEFAULT), 4);
 		accelerationConstant = tempAccelerationConstant <= 0 ? Train.ACCELERATION_DEFAULT : tempAccelerationConstant;
 
 		messagePackHelper.iterateArrayValue(KEY_PATH, pathSection -> path.add(new PathData(RailwayData.castMessagePackValueToSKMap(pathSection))));
@@ -106,7 +106,7 @@ public class Siding extends SavedRailBase implements IPacket, IReducedSaveData {
 		setTrainDetails(packet.readUtf(PACKET_STRING_READ_LENGTH), TrainType.values()[packet.readInt()]);
 		unlimitedTrains = packet.readBoolean();
 		maxTrains = packet.readInt();
-		final float tempAccelerationConstant = RailwayData.round(packet.readFloat(), 3);
+		final float tempAccelerationConstant = RailwayData.round(packet.readFloat(), 4);
 		accelerationConstant = tempAccelerationConstant <= 0 ? Train.ACCELERATION_DEFAULT : tempAccelerationConstant;
 	}
 
@@ -162,7 +162,7 @@ public class Siding extends SavedRailBase implements IPacket, IReducedSaveData {
 				color = packet.readInt();
 				unlimitedTrains = packet.readBoolean();
 				maxTrains = packet.readInt();
-				final float newAccelerationConstant = RailwayData.round(packet.readFloat(), 3);
+				final float newAccelerationConstant = RailwayData.round(packet.readFloat(), 4);
 				if (newAccelerationConstant > 0) {
 					trains.clear();
 					accelerationConstant = newAccelerationConstant;
@@ -194,7 +194,7 @@ public class Siding extends SavedRailBase implements IPacket, IReducedSaveData {
 		packet.writeInt(color);
 		packet.writeBoolean(unlimitedTrains);
 		packet.writeInt(maxTrains);
-		final float tempAccelerationConstant = RailwayData.round(accelerationConstant, 3);
+		final float tempAccelerationConstant = RailwayData.round(accelerationConstant, 4);
 		packet.writeFloat(tempAccelerationConstant);
 		sendPacket.accept(packet);
 		this.unlimitedTrains = unlimitedTrains;
@@ -496,7 +496,7 @@ public class Siding extends SavedRailBase implements IPacket, IReducedSaveData {
 			this.startSpeed = startSpeed;
 			this.startTime = startTime;
 			this.speedChange = Integer.compare(speedChange, 0);
-			final float tempAccelerationConstant = RailwayData.round(accelerationConstant, 3);
+			final float tempAccelerationConstant = RailwayData.round(accelerationConstant, 4);
 			this.accelerationConstant = tempAccelerationConstant <= 0 ? Train.ACCELERATION_DEFAULT : tempAccelerationConstant;
 		}
 

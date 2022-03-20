@@ -34,9 +34,9 @@ public class SidingScreen extends SavedRailScreenBase<Siding> {
 	private static final Component ACCELERATION_CONSTANT_TEXT = new TranslatableComponent("gui.mtr.acceleration");
 	private static final int MAX_TRAINS_TEXT_LENGTH = 3;
 	private static final int MAX_TRAINS_WIDTH = 80;
-	private static final float MAX_ACCELERATION = 0.05F; // m/tick^2
+	private static final float MAX_ACCELERATION = 0.025F; // m/tick^2
 	private static final float MIN_ACCELERATION = 0.001F; // m/tick^2
-	private static final int SLIDER_SCALE = 1000;
+	private static final int SLIDER_SCALE = 2000;
 	private static final float ACCELERATION_UNIT_CONVERSION_1 = 20 * 20; // m/tick^2 to m/s^2
 	private static final float ACCELERATION_UNIT_CONVERSION_2 = ACCELERATION_UNIT_CONVERSION_1 * 3.6F; // m/tick^2 to km/h/s
 
@@ -115,7 +115,7 @@ public class SidingScreen extends SavedRailScreenBase<Siding> {
 		}
 		float accelerationConstant;
 		try {
-			accelerationConstant = RailwayData.round(Mth.clamp((float) sliderAccelerationConstant.getIntValue() / SLIDER_SCALE + MIN_ACCELERATION, MIN_ACCELERATION, MAX_ACCELERATION), 3);
+			accelerationConstant = RailwayData.round(Mth.clamp((float) sliderAccelerationConstant.getIntValue() / SLIDER_SCALE + MIN_ACCELERATION, MIN_ACCELERATION, MAX_ACCELERATION), 4);
 		} catch (Exception ignored) {
 			accelerationConstant = Train.ACCELERATION_DEFAULT;
 		}
