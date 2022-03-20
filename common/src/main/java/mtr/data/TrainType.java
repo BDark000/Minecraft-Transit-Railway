@@ -13,6 +13,9 @@ public enum TrainType {
 	M_TRAIN(TransportMode.TRAIN, 24, 2, true),
 	M_TRAIN_SMALL(TransportMode.TRAIN, 19, 2, true),
 	M_TRAIN_MINI(TransportMode.TRAIN, 9, 2, true),
+	CM_STOCK(TransportMode.TRAIN, 24, 2, true),
+	CM_STOCK_SMALL(TransportMode.TRAIN, 19, 2, true),
+	CM_STOCK_MINI(TransportMode.TRAIN, 9, 2, true),
 	MLR(TransportMode.TRAIN, 24, 2, true),
 	MLR_SMALL(TransportMode.TRAIN, 20, 2, true),
 	MLR_TINY(TransportMode.TRAIN, 16, 2, true),
@@ -62,13 +65,17 @@ public enum TrainType {
 	LONDON_UNDERGROUND_1996(TransportMode.TRAIN, 19, 2, false),
 	R179(TransportMode.TRAIN, 19, 2, false),
 	R179_MINI(TransportMode.TRAIN, 9, 2, false),
-	MINECART(TransportMode.TRAIN, 1, 1, false),
-	OAK_BOAT(TransportMode.BOAT, 1, 1, false),
-	SPRUCE_BOAT(TransportMode.BOAT, 1, 1, false),
-	BIRCH_BOAT(TransportMode.BOAT, 1, 1, false),
-	JUNGLE_BOAT(TransportMode.BOAT, 1, 1, false),
-	ACACIA_BOAT(TransportMode.BOAT, 1, 1, false),
-	DARK_OAK_BOAT(TransportMode.BOAT, 1, 1, false),
+	R211(TransportMode.TRAIN, 19, 2, false),
+	R211_MINI(TransportMode.TRAIN, 9, 2, false),
+	R211T(TransportMode.TRAIN, 19, 2, true),
+	R211T_MINI(TransportMode.TRAIN, 9, 2, true),
+	MINECART(TransportMode.TRAIN, 1, 1, false, -1.5F, 0),
+	OAK_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
+	SPRUCE_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
+	BIRCH_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
+	JUNGLE_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
+	ACACIA_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
+	DARK_OAK_BOAT(TransportMode.BOAT, 1, 1, false, -1.5F, 0),
 	BASE_2_2(TransportMode.TRAIN, 2, 2, true),
 	BASE_3_2(TransportMode.TRAIN, 3, 2, true),
 	BASE_4_2(TransportMode.TRAIN, 4, 2, true),
@@ -103,16 +110,16 @@ public enum TrainType {
 	public final int width;
 	public final boolean hasGangwayConnection;
 	public final float riderOffset;
-	public final float offset;
+	public final float modelZOffset;
 	private final int length;
 
-	TrainType(TransportMode transportMode, int length, int width, boolean hasGangwayConnection, float riderOffset, float offset) {
+	TrainType(TransportMode transportMode, int length, int width, boolean hasGangwayConnection, float riderOffset, float modelZOffset) {
 		this.transportMode = transportMode;
 		this.length = length;
 		this.width = width;
 		this.hasGangwayConnection = hasGangwayConnection;
 		this.riderOffset = riderOffset;
-		this.offset = offset;
+		this.modelZOffset = modelZOffset;
 	}
 
 	TrainType(TransportMode transportMode, int length, int width, boolean hasGangwayConnection) {

@@ -79,7 +79,7 @@ public class MTR implements IPacket {
 		registerItem.accept("rail_connector_siding", Items.RAIL_CONNECTOR_SIDING);
 		registerItem.accept("rail_connector_turn_back", Items.RAIL_CONNECTOR_TURN_BACK);
 		registerItem.accept("rail_remover", Items.RAIL_REMOVER);
-		// TODO registerItem.accept("resource_pack_creator", Items.RESOURCE_PACK_CREATOR);
+		registerItem.accept("resource_pack_creator", Items.RESOURCE_PACK_CREATOR);
 		registerItem.accept("signal_connector_white", Items.SIGNAL_CONNECTOR_WHITE);
 		registerItem.accept("signal_connector_orange", Items.SIGNAL_CONNECTOR_ORANGE);
 		registerItem.accept("signal_connector_magenta", Items.SIGNAL_CONNECTOR_MAGENTA);
@@ -324,6 +324,7 @@ public class MTR implements IPacket {
 		Registry.registerNetworkReceiver(PACKET_SIGN_TYPES, PacketTrainDataGuiServer::receiveSignIdsC2S);
 		Registry.registerNetworkReceiver(PACKET_ADD_BALANCE, PacketTrainDataGuiServer::receiveAddBalanceC2S);
 		Registry.registerNetworkReceiver(PACKET_PIDS_UPDATE, PacketTrainDataGuiServer::receivePIDSMessageC2S);
+		Registry.registerNetworkReceiver(PACKET_ARRIVAL_PROJECTOR_UPDATE, PacketTrainDataGuiServer::receiveArrivalProjectorMessageC2S);
 		Registry.registerNetworkReceiver(PACKET_UPDATE_STATION, (minecraftServer, player, packet) -> PacketTrainDataGuiServer.receiveUpdateOrDeleteC2S(minecraftServer, player, packet, PACKET_UPDATE_STATION, railwayData -> railwayData.stations, railwayData -> railwayData.dataCache.stationIdMap, (id, transportMode) -> new Station(id), false));
 		Registry.registerNetworkReceiver(PACKET_UPDATE_PLATFORM, (minecraftServer, player, packet) -> PacketTrainDataGuiServer.receiveUpdateOrDeleteC2S(minecraftServer, player, packet, PACKET_UPDATE_PLATFORM, railwayData -> railwayData.platforms, railwayData -> railwayData.dataCache.platformIdMap, null, false));
 		Registry.registerNetworkReceiver(PACKET_UPDATE_SIDING, (minecraftServer, player, packet) -> PacketTrainDataGuiServer.receiveUpdateOrDeleteC2S(minecraftServer, player, packet, PACKET_UPDATE_SIDING, railwayData -> railwayData.sidings, railwayData -> railwayData.dataCache.sidingIdMap, null, false));
@@ -378,9 +379,9 @@ public class MTR implements IPacket {
 				railwayData.disconnectPlayer(player);
 			}
 		});
-		Registry.registerServerStartingEvent(server -> {
+		Registry.registerServerStartingEvent(minecraftServer -> {
 			int port = 8888;
-			final Path path = server.getServerDirectory().toPath().resolve("config").resolve("mtr_webserver_port.txt");
+			final Path path = minecraftServer.getServerDirectory().toPath().resolve("config").resolve("mtr_webserver_port.txt");
 			try {
 				port = Mth.clamp(Integer.parseInt(String.join("", Files.readAllLines(path)).replaceAll("[^0-9]", "")), 1025, 65535);
 			} catch (Exception ignored) {
@@ -391,15 +392,15 @@ public class MTR implements IPacket {
 				}
 			}
 			serverConnector.setPort(port);
-			DataServletHandler.SERVER = server;
-			ArrivalsServletHandler.SERVER = server;
+			DataServletHandler.SERVER = minecraftServer;
+			ArrivalsServletHandler.SERVER = minecraftServer;
 			try {
 				webServer.start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
-		Registry.registerServerStoppingEvent(server -> {
+		Registry.registerServerStoppingEvent(minecraftServer -> {
 			try {
 				webServer.stop();
 			} catch (Exception e) {

@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 public class MTRClient implements IPacket {
 
 	private static boolean isReplayMod;
+	private static boolean isVivecraft;
 	private static float gameTick = 0;
 	private static float lastPlayedTrainSoundsTick = 0;
 
@@ -242,6 +243,7 @@ public class MTRClient implements IPacket {
 		RegistryClient.registerNetworkReceiver(PACKET_CHUNK_S2C, packet -> PacketTrainDataGuiClient.receiveChunk(Minecraft.getInstance(), packet));
 		RegistryClient.registerNetworkReceiver(PACKET_OPEN_DASHBOARD_SCREEN, packet -> PacketTrainDataGuiClient.openDashboardScreenS2C(Minecraft.getInstance(), packet));
 		RegistryClient.registerNetworkReceiver(PACKET_OPEN_PIDS_CONFIG_SCREEN, packet -> PacketTrainDataGuiClient.openPIDSConfigScreenS2C(Minecraft.getInstance(), packet));
+		RegistryClient.registerNetworkReceiver(PACKET_OPEN_ARRIVAL_PROJECTOR_CONFIG_SCREEN, packet -> PacketTrainDataGuiClient.openArrivalProjectorConfigScreenS2C(Minecraft.getInstance(), packet));
 		RegistryClient.registerNetworkReceiver(PACKET_OPEN_RAILWAY_SIGN_SCREEN, packet -> PacketTrainDataGuiClient.openRailwaySignScreenS2C(Minecraft.getInstance(), packet));
 		RegistryClient.registerNetworkReceiver(PACKET_OPEN_TICKET_MACHINE_SCREEN, packet -> PacketTrainDataGuiClient.openTicketMachineScreenS2C(Minecraft.getInstance(), packet));
 		RegistryClient.registerNetworkReceiver(PACKET_OPEN_TRAIN_SENSOR_SCREEN, packet -> PacketTrainDataGuiClient.openTrainSensorScreenS2C(Minecraft.getInstance(), packet));
@@ -284,12 +286,23 @@ public class MTRClient implements IPacket {
 		RegistryClient.registerPlayerJoinEvent(player -> {
 			Config.refreshProperties();
 			isReplayMod = player.getClass().toGenericString().toLowerCase().contains("replaymod");
+			try {
+				Class.forName("org.vivecraft.main.VivecraftMain");
+				isVivecraft = true;
+			} catch (Exception ignored) {
+				isVivecraft = false;
+			}
 			System.out.println(isReplayMod ? "Running in Replay Mod mode" : "Not running in Replay Mod mode");
+			System.out.println(isVivecraft ? "Vivecraft detected" : "Vivecraft not detected");
 		});
 	}
 
 	public static boolean isReplayMod() {
 		return isReplayMod;
+	}
+
+	public static boolean isVivecraft() {
+		return isVivecraft;
 	}
 
 	public static float getGameTick() {

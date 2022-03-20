@@ -2,10 +2,7 @@ package mtr.packet;
 
 import io.netty.buffer.Unpooled;
 import mtr.Registry;
-import mtr.block.BlockPIDSBase;
-import mtr.block.BlockRailwaySign;
-import mtr.block.BlockRouteSignBase;
-import mtr.block.BlockTrainSensorBase;
+import mtr.block.*;
 import mtr.data.*;
 import mtr.mappings.Utilities;
 import net.minecraft.core.BlockPos;
@@ -63,14 +60,21 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 		Registry.sendToPlayer(player, PACKET_OPEN_PIDS_CONFIG_SCREEN, packet);
 	}
 
+	public static void openArrivalProjectorConfigScreenS2C(ServerPlayer player, BlockPos pos) {
+		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
+		packet.writeBlockPos(pos);
+		Registry.sendToPlayer(player, PACKET_OPEN_ARRIVAL_PROJECTOR_CONFIG_SCREEN, packet);
+	}
+
 	public static void openResourcePackCreatorScreenS2C(ServerPlayer player) {
 		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
 		Registry.sendToPlayer(player, PACKET_OPEN_RESOURCE_PACK_CREATOR_SCREEN, packet);
 	}
 
-	public static void announceS2C(ServerPlayer player, String message) {
+	public static void announceS2C(ServerPlayer player, String message, ResourceLocation soundId) {
 		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
 		packet.writeUtf(message);
+		packet.writeUtf(soundId == null ? "" : soundId.toString());
 		Registry.sendToPlayer(player, PACKET_ANNOUNCE, packet);
 	}
 
@@ -140,6 +144,10 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 	}
 
 	public static <T extends NameColorDataBase> void receiveUpdateOrDeleteC2S(MinecraftServer minecraftServer, ServerPlayer player, FriendlyByteBuf packet, ResourceLocation packetId, Function<RailwayData, Set<T>> dataSet, Function<RailwayData, Map<Long, T>> cacheMap, BiFunction<Long, TransportMode, T> createDataWithId, boolean isDelete) {
+		if (RailwayData.hasNoPermission(player)) {
+			return;
+		}
+
 		final Level world = player.level;
 		final RailwayData railwayData = RailwayData.getInstance(world);
 		if (railwayData == null) {
@@ -182,11 +190,15 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 		final RailwayData railwayData = RailwayData.getInstance(world);
 		if (railwayData != null) {
 			final long depotId = packet.readLong();
-			minecraftServer.execute(() -> railwayData.generatePath(minecraftServer, depotId));
+			minecraftServer.execute(() -> railwayData.railwayDataPathGenerationModule.generatePath(minecraftServer, depotId));
 		}
 	}
 
 	public static void clearTrainsC2S(MinecraftServer minecraftServer, ServerPlayer player, FriendlyByteBuf packet) {
+		if (RailwayData.hasNoPermission(player)) {
+			return;
+		}
+
 		final Level world = player.level;
 		final RailwayData railwayData = RailwayData.getInstance(world);
 		if (railwayData != null) {
@@ -214,11 +226,15 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 		final boolean stoppedOnly = packet.readBoolean();
 		final boolean movingOnly = packet.readBoolean();
 		final int number = packet.readInt();
-		final String string = packet.readUtf(SerializedDataBase.PACKET_STRING_READ_LENGTH);
+		final int stringCount = packet.readInt();
+		final String[] strings = new String[stringCount];
+		for (int i = 0; i < stringCount; i++) {
+			strings[i] = packet.readUtf(SerializedDataBase.PACKET_STRING_READ_LENGTH);
+		}
 		minecraftServer.execute(() -> {
 			final BlockEntity entity = player.level.getBlockEntity(pos);
 			if (entity instanceof BlockTrainSensorBase.TileEntityTrainSensorBase) {
-				((BlockTrainSensorBase.TileEntityTrainSensorBase) entity).setData(filterIds, stoppedOnly, movingOnly, number, string);
+				((BlockTrainSensorBase.TileEntityTrainSensorBase) entity).setData(filterIds, stoppedOnly, movingOnly, number, strings);
 			}
 		});
 	}
@@ -242,7 +258,12 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 			if (entity instanceof BlockRailwaySign.TileEntityRailwaySign) {
 				((BlockRailwaySign.TileEntityRailwaySign) entity).setData(selectedIds, signIds);
 			} else if (entity instanceof BlockRouteSignBase.TileEntityRouteSignBase) {
-				((BlockRouteSignBase.TileEntityRouteSignBase) entity).setPlatformId(selectedIds.isEmpty() ? 0 : (long) selectedIds.toArray()[0]);
+				final long platformId = selectedIds.isEmpty() ? 0 : (long) selectedIds.toArray()[0];
+				((BlockRouteSignBase.TileEntityRouteSignBase) entity).setPlatformId(platformId);
+				final BlockEntity entityAbove = player.level.getBlockEntity(signPos.above());
+				if (entityAbove instanceof BlockRouteSignBase.TileEntityRouteSignBase) {
+					((BlockRouteSignBase.TileEntityRouteSignBase) entityAbove).setPlatformId(platformId);
+				}
 			}
 		});
 	}
@@ -285,12 +306,27 @@ public class PacketTrainDataGuiServer extends PacketTrainDataBase {
 		});
 	}
 
+	public static void receiveArrivalProjectorMessageC2S(MinecraftServer minecraftServer, ServerPlayer player, FriendlyByteBuf packet) {
+		final BlockPos pos = packet.readBlockPos();
+		final int platformIdCount = packet.readInt();
+		final Set<Long> platformIds = new HashSet<>();
+		for (int i = 0; i < platformIdCount; i++) {
+			platformIds.add(packet.readLong());
+		}
+		minecraftServer.execute(() -> {
+			final BlockEntity entity = player.level.getBlockEntity(pos);
+			if (entity instanceof BlockArrivalProjectorBase.TileEntityArrivalProjectorBase) {
+				((BlockArrivalProjectorBase.TileEntityArrivalProjectorBase) entity).setData(platformIds);
+			}
+		});
+	}
+
 	public static void receiveRemoveRailAction(MinecraftServer minecraftServer, Player player, FriendlyByteBuf packet) {
 		final Level world = player.level;
 		final RailwayData railwayData = RailwayData.getInstance(world);
 		if (railwayData != null) {
 			final long id = packet.readLong();
-			minecraftServer.execute(() -> railwayData.removeRailAction(id));
+			minecraftServer.execute(() -> railwayData.railwayDataRailActionsModule.removeRailAction(id));
 		}
 	}
 

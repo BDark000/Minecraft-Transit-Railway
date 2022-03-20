@@ -57,12 +57,14 @@ public class EditDepotScreen extends EditNameColorScreenBase<Depot> {
 
 		buttonEditInstructions = new Button(0, 0, 0, SQUARE_SIZE, new TranslatableComponent("gui.mtr.edit_instructions"), button -> {
 			if (minecraft != null) {
+				saveData();
 				final List<NameColorDataBase> routes = new ArrayList<>(ClientData.getFilteredDataSet(transportMode, ClientData.ROUTES));
 				Collections.sort(routes);
 				UtilitiesClient.setScreen(minecraft, new DashboardListSelectorScreen(this, routes, data.routeIds, false, true));
 			}
 		});
 		buttonGenerateRoute = new Button(0, 0, 0, SQUARE_SIZE, new TranslatableComponent("gui.mtr.refresh_path"), button -> {
+			saveData();
 			depot.clientPathGenerationSuccessfulSegments = -1;
 			PacketTrainDataGuiClient.generatePathC2S(depot.id);
 		});
@@ -129,8 +131,8 @@ public class EditDepotScreen extends EditNameColorScreenBase<Depot> {
 	}
 
 	@Override
-	public void onClose() {
-		super.onClose();
+	protected void saveData() {
+		super.saveData();
 		for (int i = 0; i < Depot.HOURS_IN_DAY; i++) {
 			data.setFrequency(sliders[i].getIntValue(), i);
 		}
@@ -202,7 +204,7 @@ public class EditDepotScreen extends EditNameColorScreenBase<Depot> {
 		if (value == 0) {
 			headwayText = "";
 		} else {
-			headwayText = " (" + (Math.round(Depot.TRAIN_FREQUENCY_MULTIPLIER * 10F * SECONDS_PER_MC_HOUR / value) / 10F) + new TranslatableComponent("gui.mtr.s").getString() + ")";
+			headwayText = " (" + RailwayData.round((float) Depot.TRAIN_FREQUENCY_MULTIPLIER * SECONDS_PER_MC_HOUR / value, 1) + new TranslatableComponent("gui.mtr.s").getString() + ")";
 		}
 		return value / (float) Depot.TRAIN_FREQUENCY_MULTIPLIER + new TranslatableComponent("gui.mtr.tph").getString() + headwayText;
 	}
