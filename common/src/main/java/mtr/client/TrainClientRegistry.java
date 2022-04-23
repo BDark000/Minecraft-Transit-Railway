@@ -74,12 +74,12 @@ public class TrainClientRegistry {
 		register("k_train_ael", TrainType.K_TRAIN_AEL, new ModelKTrain(true), "mtr:textures/entity/k_train_ael", "k_train", "k_train_lar", null, 0x0EAB52, 78, 1, false);
 		register("k_train_ael_small", TrainType.K_TRAIN_AEL_SMALL, new ModelKTrainSmall(true), "mtr:textures/entity/k_train_ael", "k_train_lar", "k_train", null, 0x0EAB52, 78, 1, false);
 		register("k_train_ael_mini", TrainType.K_TRAIN_AEL_MINI, new ModelKTrainMini(true), "mtr:textures/entity/k_train_ael", "k_train_lar", "k_train", null, 0x0EAB52, 78, 1, false);
-		register("c_train", TrainType.C_TRAIN, new ModelCTrain(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, 69, 0.5F, false);
-		register("c_train_small", TrainType.C_TRAIN_SMALL, new ModelCTrainSmall(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, 69, 0.5F, false);
-		register("c_train_mini", TrainType.C_TRAIN_MINI, new ModelCTrainMini(), "mtr:textures/entity/c_train", "c_train", "c1141a", null, 0xFDD900, 69, 0.5F, false);
-		register("s_train", TrainType.S_TRAIN, new ModelSTrain(), "mtr:textures/entity/s_train", "london_underground_1996", "c1141a", null, 0xC1CD23, 75, 0.5F, false);
-		register("s_train_small", TrainType.S_TRAIN_SMALL, new ModelSTrainSmall(), "mtr:textures/entity/s_train", "london_underground_1996", "c1141a", null, 0xC1CD23, 75, 0.5F, false);
-		register("s_train_mini", TrainType.S_TRAIN_MINI, new ModelSTrainMini(), "mtr:textures/entity/s_train", "london_underground_1996", "c1141a", null, 0xC1CD23, 75, 0.5F, false);
+		register("c_train", TrainType.C_TRAIN, new ModelCTrain(), "mtr:textures/entity/c_train", "c_train", "c_train", null, 0xFDD900, 69, 0.5F, false);
+		register("c_train_small", TrainType.C_TRAIN_SMALL, new ModelCTrainSmall(), "mtr:textures/entity/c_train", "c_train", "c_train", null, 0xFDD900, 69, 0.5F, false);
+		register("c_train_mini", TrainType.C_TRAIN_MINI, new ModelCTrainMini(), "mtr:textures/entity/c_train", "c_train", "c_train", null, 0xFDD900, 69, 0.5F, false);
+		register("s_train", TrainType.S_TRAIN, new ModelSTrain(), "mtr:textures/entity/s_train", "london_underground_1996", "s_train", null, 0xC1CD23, 75, 0.5F, false);
+		register("s_train_small", TrainType.S_TRAIN_SMALL, new ModelSTrainSmall(), "mtr:textures/entity/s_train", "london_underground_1996", "s_train", null, 0xC1CD23, 75, 0.5F, false);
+		register("s_train_mini", TrainType.S_TRAIN_MINI, new ModelSTrainMini(), "mtr:textures/entity/s_train", "london_underground_1996", "s_train", null, 0xC1CD23, 75, 0.5F, false);
 		register("a_train_tcl", TrainType.A_TRAIN_TCL, new ModelATrain(false), "mtr:textures/entity/a_train_tcl", "a_train", "a_train", null, 0xF69447, 78, 0.5F, false);
 		register("a_train_tcl_small", TrainType.A_TRAIN_TCL_SMALL, new ModelATrainSmall(false), "mtr:textures/entity/a_train_tcl", "a_train", "a_train", null, 0xF69447, 78, 0.5F, false);
 		register("a_train_tcl_mini", TrainType.A_TRAIN_TCL_MINI, new ModelATrainMini(false), "mtr:textures/entity/a_train_tcl", "a_train", "a_train", null, 0xF69447, 78, 0.5F, false);

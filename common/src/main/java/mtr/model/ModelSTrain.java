@@ -1483,6 +1483,21 @@ public class ModelSTrain extends ModelTrainBase {
 
 	@Override
 	protected float getDoorAnimationZ(float value, boolean opening) {
-		return smoothEnds(0, DOOR_MAX, 0, 0.5F, value);
+		if (opening) {
+			if (value > 0.45){
+				return smoothEnds(DOOR_MAX - 2, DOOR_MAX, 0.4F, 0.5F, value);
+			}
+			else {
+				return smoothEnds(0, DOOR_MAX - 2, 0, 0.4F, value);
+			}
+		}
+		else {
+			if (value > 0.05){
+				return smoothEnds(1, DOOR_MAX, 0.1F, 0.5F, value);
+			}
+			else {
+				return smoothEnds(0, 1, 0, 0.1F, value);
+			}
+		}
 	}
 }

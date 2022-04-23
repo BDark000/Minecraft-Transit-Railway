@@ -3983,6 +3983,22 @@
 			}
 		]
 	},
+	"c_train_door_open": {
+		"sounds": [
+			{
+				"name": "mtr:c_train/door_open",
+				"pitch": 0.5
+			}
+		]
+	},
+	"c_train_door_close": {
+		"sounds": [
+			{
+				"name": "mtr:c_train/door_close",
+				"pitch": 0.5
+			}
+		]
+	},
 	"c_train_acceleration_0a": {
 		"sounds": [
 			{
@@ -17154,6 +17170,22 @@
 				"name": "mtr:london_underground_1996/deceleration/speed_24c",
 				"pitch": 1,
 				"attenuation_distance": 32
+			}
+		]
+	},
+	"s_train_door_open": {
+		"sounds": [
+			{
+				"name": "mtr:s_train/door_open",
+				"pitch": 0.5
+			}
+		]
+	},
+	"s_train_door_close": {
+		"sounds": [
+			{
+				"name": "mtr:s_train/door_close",
+				"pitch": 0.5
 			}
 		]
 	}
