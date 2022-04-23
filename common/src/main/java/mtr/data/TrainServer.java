@@ -89,7 +89,7 @@ public class TrainServer extends Train {
 
 		if (doorLeftOpen || doorRightOpen) {
 			final float margin = halfSpacing + BOX_PADDING;
-			world.getEntitiesOfClass(Player.class, new AABB(carX + margin, carY + margin, carZ + margin, carX - margin, carY - margin, carZ - margin), player -> !player.isSpectator() && !ridingEntities.contains(player.getUUID())).forEach(player -> {
+			world.getEntitiesOfClass(Player.class, new AABB(carX + margin, carY + margin, carZ + margin, carX - margin, carY - margin, carZ - margin), player -> !player.isSpectator() && !ridingEntities.contains(player.getUUID()) && railwayData.railwayDataCoolDownModule.canRide(player)).forEach(player -> {
 				final Vec3 positionRotated = player.position().subtract(carX, carY, carZ).yRot(-carYaw).xRot(-carPitch);
 				if (Math.abs(positionRotated.x) < halfWidth + INNER_PADDING && Math.abs(positionRotated.y) < 2.5 && Math.abs(positionRotated.z) <= halfSpacing) {
 					ridingEntities.add(player.getUUID());
@@ -99,7 +99,8 @@ public class TrainServer extends Train {
 					packet.writeLong(id);
 					packet.writeFloat(percentageX);
 					packet.writeFloat(percentageZ);
-					Registry.sendToPlayer((ServerPlayer) player, PACKET_UPDATE_TRAIN_PASSENGERS, packet);
+					packet.writeUUID(player.getUUID());
+					world.players().forEach(worldPlayer -> Registry.sendToPlayer((ServerPlayer) worldPlayer, PACKET_UPDATE_TRAIN_PASSENGERS, packet));
 				}
 			});
 		}
@@ -262,23 +263,10 @@ public class TrainServer extends Train {
 
 				if (timeSegment.savedRailBaseId != 0) {
 					if (timeSegment.routeId == 0) {
-						RailwayData.useRoutesAndStationsFromIndex(path.get(getIndex(timeSegment.endRailProgress, true)).stopIndex - 1, depot.routeIds, dataCache, (thisRoute, nextRoute, thisStation, nextStation, lastStation) -> {
-							timeSegment.lastStationId = lastStation == null ? 0 : lastStation.id;
+						RailwayData.useRoutesAndStationsFromIndex(path.get(getIndex(timeSegment.endRailProgress, true)).stopIndex - 1, depot.routeIds, dataCache, (currentStationIndex, thisRoute, nextRoute, thisStation, nextStation, lastStation) -> {
 							timeSegment.routeId = thisRoute == null ? 0 : thisRoute.id;
-							timeSegment.isTerminating = nextStation == null;
+							timeSegment.currentStationIndex = currentStationIndex;
 						});
-					}
-
-					final String destinationString;
-					final String routeNumber;
-					final Station lastStation = dataCache.stationIdMap.get(timeSegment.lastStationId);
-					if (lastStation != null) {
-						final Route thisRoute = dataCache.routeIdMap.get(timeSegment.routeId);
-						routeNumber = thisRoute != null && thisRoute.isLightRailRoute ? thisRoute.lightRailRouteNumber : "";
-						destinationString = lastStation.name;
-					} else {
-						routeNumber = "";
-						destinationString = "";
 					}
 
 					final long platformId = timeSegment.savedRailBaseId;
@@ -287,7 +275,7 @@ public class TrainServer extends Train {
 					}
 
 					final long arrivalMillis = currentMillis + (long) ((timeSegment.endTime + offsetTime - currentTime) * Depot.MILLIS_PER_TICK);
-					schedulesForPlatform.get(platformId).add(new ScheduleEntry(arrivalMillis, trainCars, platformId, timeSegment.routeId, routeNumber, destinationString, timeSegment.isTerminating));
+					schedulesForPlatform.get(platformId).add(new ScheduleEntry(arrivalMillis, trainCars, timeSegment.routeId, timeSegment.currentStationIndex));
 				}
 
 				if (routeId == 0) {
