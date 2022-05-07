@@ -471,8 +471,8 @@ public abstract class Train extends NameColorDataBase implements IPacket, IGui {
 		final float maxDoorMoveTime = Math.min(DOOR_MOVE_TIME, dwellTicks / 2 - DOOR_DELAY);
 		final float stage1 = DOOR_DELAY;
 		final float stage2 = DOOR_DELAY + maxDoorMoveTime;
-		final float stage3 = dwellTicks - DOOR_DELAY - maxDoorMoveTime;
-		final float stage4 = dwellTicks - DOOR_DELAY;
+		final float stage3 = dwellTicks - DOOR_DELAY * 2 - maxDoorMoveTime;
+		final float stage4 = dwellTicks - DOOR_DELAY * 2;
 		if (stopCounter < stage1 || stopCounter >= stage4) {
 			return 0;
 		} else if (stopCounter >= stage2 && stopCounter < stage3) {

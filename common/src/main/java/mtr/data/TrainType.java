@@ -24,6 +24,7 @@ public enum TrainType {
 	E44_SMALL(TransportMode.TRAIN, 16, 2, true),
 	E44_MINI(TransportMode.TRAIN, 12, 2, true),
 	DRL(TransportMode.TRAIN, 24, 2, true),
+	DRL_MINI(TransportMode.TRAIN, 14, 2, true),
 	K_TRAIN(TransportMode.TRAIN, 24, 2, true),
 	K_TRAIN_SMALL(TransportMode.TRAIN, 19, 2, true),
 	K_TRAIN_MINI(TransportMode.TRAIN, 9, 2, true),
