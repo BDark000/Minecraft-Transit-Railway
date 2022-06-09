@@ -10,6 +10,7 @@ import mtr.block.BlockTrainSensorBase;
 import mtr.client.ClientData;
 import mtr.client.IDrawing;
 import mtr.data.*;
+import mtr.mappings.Text;
 import mtr.mappings.UtilitiesClient;
 import mtr.screen.*;
 import net.minecraft.client.Minecraft;
@@ -18,8 +19,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -38,10 +37,10 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 	public static void openVersionCheckS2C(Minecraft minecraftClient, FriendlyByteBuf packet) {
 		final String version = packet.readUtf();
 		minecraftClient.execute(() -> {
-			if (!Keys.MOD_VERSION.equals(version)) {
+			if (!Keys.MOD_VERSION.split("-hotfix-")[0].equals(version)) {
 				final ClientPacketListener connection = minecraftClient.getConnection();
 				if (connection != null) {
-					final int widthDifference1 = minecraftClient.font.width(new TranslatableComponent("gui.mtr.mismatched_versions_your_version")) - minecraftClient.font.width(new TranslatableComponent("gui.mtr.mismatched_versions_server_version"));
+					final int widthDifference1 = minecraftClient.font.width(Text.translatable("gui.mtr.mismatched_versions_your_version")) - minecraftClient.font.width(Text.translatable("gui.mtr.mismatched_versions_server_version"));
 					final int widthDifference2 = minecraftClient.font.width(Keys.MOD_VERSION) - minecraftClient.font.width(version);
 					final int spaceWidth = minecraftClient.font.width(" ");
 
@@ -49,7 +48,7 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 					for (int i = 0; i < -widthDifference1 / spaceWidth; i++) {
 						text.append(" ");
 					}
-					text.append(new TranslatableComponent("gui.mtr.mismatched_versions_your_version", Keys.MOD_VERSION).getString());
+					text.append(Text.translatable("gui.mtr.mismatched_versions_your_version", Keys.MOD_VERSION).getString());
 					for (int i = 0; i < -widthDifference2 / spaceWidth; i++) {
 						text.append(" ");
 					}
@@ -57,13 +56,13 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 					for (int i = 0; i < widthDifference1 / spaceWidth; i++) {
 						text.append(" ");
 					}
-					text.append(new TranslatableComponent("gui.mtr.mismatched_versions_server_version", version).getString());
+					text.append(Text.translatable("gui.mtr.mismatched_versions_server_version", version).getString());
 					for (int i = 0; i < widthDifference2 / spaceWidth; i++) {
 						text.append(" ");
 					}
 					text.append("\n\n");
 
-					connection.getConnection().disconnect(new TextComponent(text.toString()).append(new TranslatableComponent("gui.mtr.mismatched_versions")));
+					connection.getConnection().disconnect(Text.literal(text.toString()).append(Text.translatable("gui.mtr.mismatched_versions")));
 				}
 			}
 		});
@@ -99,6 +98,15 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 				} else if (entity instanceof BlockTrainSensorBase.TileEntityTrainSensorBase) {
 					UtilitiesClient.setScreen(minecraftClient, new TrainBasicSensorScreen(pos));
 				}
+			}
+		});
+	}
+
+	public static void openLiftTrackFloorS2C(Minecraft minecraftClient, FriendlyByteBuf packet) {
+		final BlockPos pos = packet.readBlockPos();
+		minecraftClient.execute(() -> {
+			if (!(minecraftClient.screen instanceof LiftTrackFloorScreen)) {
+				UtilitiesClient.setScreen(minecraftClient, new LiftTrackFloorScreen(pos));
 			}
 		});
 	}
@@ -269,6 +277,15 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 		RegistryClient.sendToServer(PACKET_UPDATE_TRAIN_SENSOR, packet);
 	}
 
+	public static void sendLiftTrackFloorC2S(BlockPos pos, String floorNumber, String floorDescription, boolean shouldDing) {
+		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
+		packet.writeBlockPos(pos);
+		packet.writeUtf(floorNumber);
+		packet.writeUtf(floorDescription);
+		packet.writeBoolean(shouldDing);
+		RegistryClient.sendToServer(PACKET_UPDATE_LIFT_TRACK_FLOOR, packet);
+	}
+
 	public static void generatePathS2C(Minecraft minecraftClient, FriendlyByteBuf packet) {
 		final long depotId = packet.readLong();
 		final int successfulSegments = packet.readInt();
@@ -294,6 +311,14 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 		RegistryClient.sendToServer(PACKET_CLEAR_TRAINS, packet);
 	}
 
+	public static void sendUpdateEntitySeatPassengerPosition(double x, double y, double z) {
+		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
+		packet.writeDouble(x);
+		packet.writeDouble(y);
+		packet.writeDouble(z);
+		RegistryClient.sendToServer(PACKET_UPDATE_ENTITY_SEAT_POSITION, packet);
+	}
+
 	public static void sendSignIdsC2S(BlockPos signPos, Set<Long> selectedIds, String[] signIds) {
 		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
 		packet.writeBlockPos(signPos);
@@ -304,6 +329,13 @@ public class PacketTrainDataGuiClient extends PacketTrainDataBase {
 			packet.writeUtf(signType == null ? "" : signType);
 		}
 		RegistryClient.sendToServer(PACKET_SIGN_TYPES, packet);
+	}
+
+	public static void sendPressLiftButtonC2S(UUID uuid, int floor) {
+		final FriendlyByteBuf packet = new FriendlyByteBuf(Unpooled.buffer());
+		packet.writeUUID(uuid);
+		packet.writeInt(floor);
+		RegistryClient.sendToServer(PACKET_PRESS_LIFT_BUTTON, packet);
 	}
 
 	public static void addBalanceC2S(int addAmount, int emeralds) {
