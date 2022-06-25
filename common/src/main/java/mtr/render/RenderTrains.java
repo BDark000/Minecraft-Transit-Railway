@@ -107,7 +107,7 @@ public class RenderTrains extends EntityRendererMapper<EntitySeat> implements IG
 
 		final int renderDistanceChunks = UtilitiesClient.getRenderDistance();
 		final float lastFrameDuration = MTRClient.getLastFrameDuration();
-		final boolean useAnnouncements = Config.useTTSAnnouncements() || Config.showAnnouncementMessages();
+		final boolean useAnnouncements = Config.showAnnouncementMessages();
 
 		if (Config.useDynamicFPS()) {
 			if (lastFrameDuration > 0.5) {
