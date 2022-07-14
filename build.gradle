@@ -93,7 +93,6 @@ task setupFiles() {
 		into "common/src/main/resources/assets/mtr/website/gestures"
 	}
 
-	/* temporarily disable auto translate
 	download {
 		src "https://crowdin.com/backend/download/project/minecraft-transit-railway.zip"
 		dest "common/src/main/java/mtr/mappings/lang.zip"
@@ -103,7 +102,7 @@ task setupFiles() {
 		outputs.upToDateWhen { false }
 		from(zipTree("common/src/main/java/mtr/mappings/lang.zip"))
 		into "common/src/main/resources/assets/mtr/lang"
-	}*/
+	}
 
 	copy {
 		outputs.upToDateWhen { false }

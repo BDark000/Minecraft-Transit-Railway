@@ -107,7 +107,7 @@ public class RenderTrains extends EntityRendererMapper<EntitySeat> implements IG
 
 		final int renderDistanceChunks = UtilitiesClient.getRenderDistance();
 		final float lastFrameDuration = MTRClient.getLastFrameDuration();
-		final boolean useAnnouncements = Config.useTTSAnnouncements() || Config.showAnnouncementMessages();
+		final boolean useAnnouncements = Config.showAnnouncementMessages();
 
 		if (Config.useDynamicFPS()) {
 			if (lastFrameDuration > 0.5) {
@@ -268,7 +268,7 @@ public class RenderTrains extends EntityRendererMapper<EntitySeat> implements IG
 
 			if (!(speed <= 3 && RailwayData.useRoutesAndStationsFromIndex(stopIndex, routeIds, ClientData.DATA_CACHE, (currentStationIndex, thisRoute, nextRoute, thisStation, nextStation, lastStation) -> {
 				final Component text;
-				switch ((int) ((System.currentTimeMillis() / 1000) % 3)) {
+				switch ((int) ((System.currentTimeMillis() / 2000) % 3)) {
 					default:
 						text = getStationText(thisStation, "this");
 						break;
@@ -330,7 +330,7 @@ public class RenderTrains extends EntityRendererMapper<EntitySeat> implements IG
 			if (useAnnouncements) {
 				RailwayData.useRoutesAndStationsFromIndex(stopIndex, routeIds, ClientData.DATA_CACHE, (currentStationIndex, thisRoute, nextRoute, thisStation, nextStation, lastStation) -> {
 					if (thisRoute.isLightRailRoute && lastStation != null) {
-						IDrawing.narrateOrAnnounce(IGui.insertTranslation("gui.mtr.light_rail_route_announcement_cjk", "gui.mtr.light_rail_route_announcement", thisRoute.lightRailRouteNumber, 1, lastStation.name));
+							IDrawing.narrateOrAnnounce(IGui.insertTranslation("gui.mtr.light_rail_route_announcement_cjk", "gui.mtr.light_rail_route_announcement", thisRoute.lightRailRouteNumber, 1, lastStation.name));
 					}
 				});
 			}
