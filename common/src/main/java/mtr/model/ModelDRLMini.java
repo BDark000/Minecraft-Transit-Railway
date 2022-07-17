@@ -16,9 +16,4 @@ public class ModelDRLMini extends ModelDRL{
         return new int[]{-104, 104};
     }
 
-    @Override
-    protected int[] getBogiePositions() {
-        return new int[]{0};
-    }
-
 }
